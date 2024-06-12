@@ -70,18 +70,15 @@ router.use((req, res, next) => {
  * =====================================================================
  */
 
-const mongoose = require("mongoose"), // mongoose를 요청
-  dbName = "ut-nodejs";
-
+const mongoose = require("mongoose"); // mongoose를 요청
 // 데이터베이스 연결 설정
-mongoose.connect(`mongodb://127.0.0.1:27017/${dbName}`, {
-  useNewUrlParser: true,
-});
+mongoose.connect(
+  "mongodb+srv://wt88218:gusxor0203@ut-node.blvb1gp.mongodb.net/?retryWrites=true&w=majority&appName=ut-node", // Atlas 경로
 
-// 연결되면 메시지를 보냄
+);
 const db = mongoose.connection;
 db.once("open", () => {
-  console.log(`Connected to ${dbName} MongoDB using Mongoose!`);
+  console.log("Connected to MONGODB!!!");
 });
 
 /**
@@ -123,6 +120,11 @@ router.get("/transportation", pagesController.showTransportation); // 교통수�
  * Listing 23.2 (p. 335)
  * app.js로 로그인 라우트를 추가
  */
+router.get("/user/login", usersController.login);
+router.post("/users/login",
+  usersController.authenticate,
+  usersController.redirectView
+);
 
 /**
  * Users
