@@ -15,7 +15,7 @@ const express = require("express"), // express를 요청
 // controllers 폴더의 파일을 요청
 const pagesController = require("./controllers/pagesController"),
   subscribersController = require("./controllers/subscribersController"),
-  usersController = require("./controllers/usersController.TODO"),
+  usersController = require("./controllers/usersController"),
   coursesController = require("./controllers/coursesController"),
   talksController = require("./controllers/talksController"),
   trainsController = require("./controllers/trainsController"),
@@ -73,6 +73,11 @@ router.use(connectFlash()); // connect-flash 미들웨어를 사용
 // passport를 요청
 // passport를 초기화
 // passport가 Express.js 내 세션을 사용하도록 설정
+const passport = require("passport");
+router.use(passport.initialize());
+router.use(passport.session());
+
+
 
 /**
  * @TODO: 
@@ -80,6 +85,10 @@ router.use(connectFlash()); // connect-flash 미들웨어를 사용
  * Listing 24.2 (p. 351)
  * main.js에서 passport 직렬화 설정
  */
+const User = require("./models/User");
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 // User 모델을 요청
 // User 모델의 인증 전략을 passport에 전달
 // User 모델의 직렬화 메서드를 passport에 전달
@@ -99,6 +108,8 @@ router.use((req, res, next) => {
    * Listing 24.7 (p. 358)
    * 사용자 정의 미들웨어로 로컬 변수 추가
    */
+  res.locals.loggedIn = req.isAuthenticated();
+  res.locals.currentUser = req.user;
   // 로그인 여부를 확인하는 불리언 값을 로컬 변수에 추가
   // 현재 사용자를 로컬 변수에 추가
   next();
